@@ -1,8 +1,10 @@
 package com.company;
 
+import java.io.FileNotFoundException;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args)   {
 
 
 
@@ -29,9 +31,8 @@ public class Main {
 //                "Balance: " + account.getBalance()
 //        );
 
-
-        // ===== Bank Account with throw exception=====
-
+//     ===== Bank Account with throw exception=====
+//
 //        BankAccount2 account =
 //                new BankAccount2("Mohammed", 1000);
 //
@@ -58,7 +59,7 @@ public class Main {
 
         // ===== Bank Account with try catch =====
 
-
+//
 //        BankAccount2 account = new BankAccount2("Mohammed", 1000);
 //        try {
 //            account.withdraw(2000);
@@ -71,36 +72,36 @@ public class Main {
 
         // ===== Bank Account with Custome ExCEPTION =====
 
-//                BankAccount3 account =
-//                new BankAccount3("Mohammed", 1000);
-//
-//        System.out.println(account.getBalance());
-//
-//        account.deposit(500);
-//
-//        System.out.println(
-//                "Balance: " + account.getBalance()
-//        );
-//
-//        try {
-//            account.withdraw(200);
-//        } catch (InsufficientBalanceException e) {
-//            e.printStackTrace();
-//        }
-//
-//        System.out.println(
-//                "Balance: " + account.getBalance()
-//        );
-//
-//        try {
-//            account.withdraw(2000);
-//        } catch (InsufficientBalanceException e) {
-//            e.printStackTrace();
-//        }
-//
-//        System.out.println(
-//                "Balance: " + account.getBalance()
-//        );
+                BankAccount3 account =
+                new BankAccount3("Mohammed", 1000);
+
+        System.out.println(account.getBalance());
+
+        account.deposit(500);
+
+        System.out.println(
+                "Balance: " + account.getBalance()
+        );
+
+       try {
+            account.withdraw(200);
+      } catch (InsufficientBalanceException e) {
+           e.printStackTrace();
+        }
+
+        System.out.println(
+                "Balance: " + account.getBalance()
+        );
+
+       try {
+            account.withdraw(2000);
+     } catch (InsufficientBalanceException e) {
+          e.printStackTrace();
+        }
+
+        System.out.println(
+                "Balance: " + account.getBalance()
+        );
 
 /*   ==========>       task   <============
     1- Create Custom exception  "InvalidAmountException"
@@ -110,6 +111,12 @@ public class Main {
 
      ==========>       task   <============
 */
+
+
+
+
+
+
     }
 
 }
