@@ -10,7 +10,12 @@ public class BankAccount3 {
         this.balance = balance;
     }
 
-    public void deposit(double amount) {
+    public void deposit(double amount) throws InvalidAmountException {
+        if (amount <= 0) {
+            throw new InvalidAmountException(
+                    "Deposit amount must be positive"
+            );
+        }
         balance += amount;
     }
 
