@@ -1,3 +1,4 @@
+
 package sample.view;
 
 import javafx.geometry.Insets;
@@ -35,6 +36,8 @@ public class MedicineView {
     private Button addButton;
 
     private Button editButton;
+
+    private Button salesButton;
 
 
     public MedicineView() {
@@ -139,7 +142,7 @@ public class MedicineView {
         Button medicinesButton =
                 createMenuButton("💊  Medicines");
 
-        Button salesButton =
+        salesButton =
                 createMenuButton("🛒  Sales");
 
         Button reportsButton =
@@ -622,4 +625,14 @@ public class MedicineView {
 
         return addButton;
     }
+
+    // =========================================================
+    // GET SALES BUTTON
+    // =========================================================
+
+    public Button getSalesButton() {
+
+        return salesButton;
+    }
 }
+

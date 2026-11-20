@@ -3,7 +3,7 @@ package sample.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
-
+import sample.controller.SalesController;
 import javafx.scene.input.KeyCode;
 import sample.model.Medicine;
 import sample.service.MedicineService;
@@ -46,6 +46,8 @@ public class MedicineController {
         setupAddButton();
 
         setupEditButton();
+
+        setupSalesButton();
     }
 
     // =========================================================
@@ -531,6 +533,28 @@ public class MedicineController {
         });
     }
 
+    // =====================================================
+// SALES BUTTON
+// =====================================================
+
+    private void setupSalesButton() {
+
+        view.getSalesButton()
+                .setOnAction(event -> {
+
+                    String cashierName =
+                            "Cashier " + System.currentTimeMillis();
+
+                    new SalesController(
+                            service,
+                            cashierName
+                    );
+
+                    allMedicines.setAll(service.loadMedicines());
+
+                    view.getMedicineTable().refresh();
+                });
+    }
     // =========================================================
     // GET VIEW
     // =========================================================

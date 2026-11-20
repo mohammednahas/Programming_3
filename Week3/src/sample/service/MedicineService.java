@@ -1,3 +1,4 @@
+
 package sample.service;
 
 import sample.model.Medicine;
@@ -12,150 +13,233 @@ import java.util.List;
 
 public class MedicineService {
 
-    private final String filePath =
-            "data/medicines.txt";
+    // Use the existing Data folder in the project
+    private final String filePath = "Data/medicines.txt";
 
-    // =========================================================
+    // =====================================================
     // LOAD MEDICINES
-    // =========================================================
+    // =====================================================
 
-    public List<Medicine> loadMedicines() {
+    public  List<Medicine> loadMedicines() {
 
-        List<Medicine> medicines =
-                new ArrayList<>();
+        List<Medicine> medicines = new ArrayList<>();
 
         try (BufferedReader reader =
-                     new BufferedReader(
-                             new FileReader(filePath)
-                     )) {
+                     new BufferedReader(new FileReader(filePath))) {
 
             String line;
 
             while ((line = reader.readLine()) != null) {
 
-                String[] parts =
-                        line.split(",");
+                String[] parts = line.split(",");
 
-                String name =
-                        parts[0];
+                if (parts.length != 3) {
+                    continue;
+                }
 
-                double price =
-                        Double.parseDouble(parts[1]);
+                String name = parts[0];
+                double price = Double.parseDouble(parts[1]);
+                int quantity = Integer.parseInt(parts[2]);
 
-                int quantity =
-                        Integer.parseInt(parts[2]);
-
-                Medicine medicine =
-                        new Medicine(
-                                name,
-                                price,
-                                quantity
-                        );
-
-                medicines.add(medicine);
+                medicines.add(
+                        new Medicine(name, price, quantity)
+                );
             }
 
         } catch (IOException e) {
-
             e.printStackTrace();
         }
 
         return medicines;
     }
 
-    // =========================================================
+    // =====================================================
     // ADD MEDICINE
-    // =========================================================
+    // =====================================================
 
-    public void addMedicine(
-            Medicine medicine) {
+    public  void addMedicine(Medicine medicine) {
 
         try (BufferedWriter writer =
                      new BufferedWriter(
-                             new FileWriter(
-                                     filePath,
-                                     true
-                             )
-                     )) {
+                             new FileWriter(filePath, true))) {
 
             writer.write(
-                    medicine.getName()
-                            + ","
-                            + medicine.getPrice()
-                            + ","
+                    medicine.getName() + ","
+                            + medicine.getPrice() + ","
                             + medicine.getQuantity()
             );
 
             writer.newLine();
 
         } catch (IOException e) {
-
             e.printStackTrace();
         }
     }
 
-    // =========================================================
+    // =====================================================
     // UPDATE MEDICINE
-    // =========================================================
+    // =====================================================
 
-    public void updateMedicine(
+    public  void updateMedicine(
             Medicine oldMedicine,
             Medicine updatedMedicine) {
 
-        List<Medicine> medicines =
-                loadMedicines();
+        List<Medicine> medicines = loadMedicines();
 
-        for (int i = 0;
-             i < medicines.size();
-             i++) {
+        for (int i = 0; i < medicines.size(); i++) {
 
-            Medicine medicine =
-                    medicines.get(i);
+            Medicine medicine = medicines.get(i);
 
-            if (medicine.getName()
-                    .equals(oldMedicine.getName())) {
+            if (medicine.getName().equalsIgnoreCase(
+                    oldMedicine.getName())) {
 
-                medicines.set(
-                        i,
-                        updatedMedicine
-                );
-
+                medicines.set(i, updatedMedicine);
                 break;
             }
         }
 
-        saveMedicines(medicines);
+        try {
+            saveMedicines(medicines);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    // =========================================================
+     // Without Sync
+
+    public boolean sellMedicineWithoutSync(
+            String medicineName,
+            int requestedQuantity) {
+
+        if (requestedQuantity <= 0) {
+            return false;
+        }
+
+        List<Medicine> medicines = loadMedicines();
+
+        for (int i = 0; i < medicines.size(); i++) {
+
+            Medicine medicine = medicines.get(i);
+
+            if (medicine.getName().equalsIgnoreCase(medicineName)) {
+
+                if (medicine.getQuantity() < requestedQuantity) {
+                    return false;
+                }
+
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return false;
+                }
+
+                int remainingQuantity =
+                        medicine.getQuantity() - requestedQuantity;
+
+                medicines.set(i, new Medicine(
+                        medicine.getName(),
+                        medicine.getPrice(),
+                        remainingQuantity
+                ));
+
+                try {
+                    saveMedicines(medicines);
+                    return true;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+
+
+    // =====================================================
+    //   SELL MEDICINE   with sync
+    // =====================================================
+
+    public synchronized boolean sellMedicine(
+            String medicineName,
+            int requestedQuantity) {
+
+        if (requestedQuantity <= 0) {
+            return false;
+        }
+
+        // Read the latest stock
+        List<Medicine> medicines = loadMedicines();
+
+        for (int i = 0; i < medicines.size(); i++) {
+
+            Medicine medicine = medicines.get(i);
+
+            if (medicine.getName().equalsIgnoreCase(medicineName)) {
+
+                // Check available quantity
+                if (medicine.getQuantity() < requestedQuantity) {
+                    return false;
+                }
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return false;
+                }
+
+                // Calculate remaining stock
+                int remainingQuantity =
+                        medicine.getQuantity() - requestedQuantity;
+
+                // Create updated medicine object
+                Medicine updatedMedicine = new Medicine(
+                        medicine.getName(),
+                        medicine.getPrice(),
+                        remainingQuantity
+                );
+
+                medicines.set(i, updatedMedicine);
+
+                // Save the updated stock
+                try {
+                    saveMedicines(medicines);
+                    return true;
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+        }
+
+        // Medicine not found
+        return false;
+    }
+
+    // =====================================================
     // SAVE ALL MEDICINES
-    // =========================================================
+    // =====================================================
 
     private void saveMedicines(
-            List<Medicine> medicines) {
+            List<Medicine> medicines) throws IOException {
 
         try (BufferedWriter writer =
-                     new BufferedWriter(
-                             new FileWriter(filePath)
-                     )) {
+                     new BufferedWriter(new FileWriter(filePath))) {
 
-            for (Medicine medicine :
-                    medicines) {
+            for (Medicine medicine : medicines) {
 
                 writer.write(
-                        medicine.getName()
-                                + ","
-                                + medicine.getPrice()
-                                + ","
+                        medicine.getName() + ","
+                                + medicine.getPrice() + ","
                                 + medicine.getQuantity()
                 );
 
                 writer.newLine();
             }
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
         }
     }
 }
