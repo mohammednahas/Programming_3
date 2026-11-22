@@ -2,6 +2,7 @@ package sample.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.Alert;
 import sample.controller.SalesController;
 import javafx.scene.input.KeyCode;
@@ -42,6 +43,12 @@ public class MedicineController {
         setupKeyboardEvents();
 
         setupSearch();
+
+        setupSearchButton();
+
+        setupHomeButton();
+
+        setupStatistics();
 
         setupAddButton();
 
@@ -101,6 +108,116 @@ public class MedicineController {
 
         view.getMedicineTable()
                 .setItems(filtered);
+    }
+
+    // =========================================================
+    // SEARCH BUTTON
+    // =========================================================
+
+    private void setupSearchButton() {
+
+        // Click the Search button
+        view.getSearchButton()
+                .setOnAction(event -> {
+
+                    filterMedicines(
+                            view.getSearchField().getText()
+                    );
+                });
+
+        // Press Enter inside the search field
+        view.getSearchField()
+                .setOnAction(event -> {
+
+                    filterMedicines(
+                            view.getSearchField().getText()
+                    );
+                });
+    }
+
+    // =========================================================
+    // HOME BUTTON
+    // =========================================================
+
+    private void setupHomeButton() {
+
+        view.getHomeButton()
+                .setOnAction(event -> {
+
+                    goHome();
+                });
+    }
+
+    private void goHome() {
+
+        // Clear the search
+        view.getSearchField()
+                .clear();
+
+        // Show all medicines again
+        view.getMedicineTable()
+                .setItems(allMedicines);
+
+        // Remove any selected row
+        view.getMedicineTable()
+                .getSelectionModel()
+                .clearSelection();
+
+        // Go back to the top of the table
+        if (!allMedicines.isEmpty()) {
+
+            view.getMedicineTable()
+                    .scrollTo(0);
+        }
+
+        view.getMedicineTable()
+                .refresh();
+    }
+
+    // =========================================================
+    // STATISTICS CARDS
+    // =========================================================
+
+    private void setupStatistics() {
+
+        // Show the real numbers when the app starts
+        updateStatistics();
+
+        // Update the numbers automatically whenever the list
+        // changes (add, edit, sale, reload)
+        allMedicines.addListener(
+                (ListChangeListener<Medicine>) change ->
+                        updateStatistics()
+        );
+    }
+
+    private void updateStatistics() {
+
+        int total =
+                allMedicines.size();
+
+        int available = 0;
+
+        int outOfStock = 0;
+
+        for (Medicine medicine :
+                allMedicines) {
+
+            if (medicine.getQuantity() > 0) {
+
+                available++;
+
+            } else {
+
+                outOfStock++;
+            }
+        }
+
+        view.updateStatistics(
+                total,
+                available,
+                outOfStock
+        );
     }
 
     // =========================================================
