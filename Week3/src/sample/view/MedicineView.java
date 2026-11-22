@@ -26,6 +26,14 @@ public class MedicineView {
     private final BorderPane root;
 
     // =========================
+    // Header user name
+    // =========================
+
+    private Label userLabel;
+
+    private String userName = "Mohammed";
+
+    // =========================
     // Controls
     // =========================
 
@@ -100,8 +108,8 @@ public class MedicineView {
                 subtitle
         );
 
-        Label user =
-                new Label("Mohammed  ● Online");
+        userLabel =
+                new Label(userName + "  ● Online");
 
         HBox header =
                 new HBox();
@@ -123,7 +131,7 @@ public class MedicineView {
 
         header.getChildren().addAll(
                 branding,
-                user
+                userLabel
         );
 
         HBox.setHgrow(
@@ -132,6 +140,24 @@ public class MedicineView {
         );
 
         return header;
+    }
+
+    // =========================================================
+    // USER NAME (used by Settings)
+    // =========================================================
+
+    public String getUserName() {
+
+        return userName;
+    }
+
+    public void setUserName(String name) {
+
+        userName = name;
+
+        userLabel.setText(
+                userName + "  ● Online"
+        );
     }
 
     // =========================================================

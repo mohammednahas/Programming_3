@@ -11,6 +11,10 @@ import sample.service.MedicineService;
 import sample.view.AddMedicineView;
 import sample.view.EditMedicineView;
 import sample.view.MedicineView;
+import javafx.application.Platform;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
+import java.util.Optional;
 
 public class MedicineController {
 
@@ -59,6 +63,10 @@ public class MedicineController {
         setupReportsButton();
 
         setupSalesButton();
+
+        setupSettingsButton();
+
+        setupLogoutButton();
     }
 
     // =========================================================
@@ -758,6 +766,100 @@ public class MedicineController {
                     "Key Typed: " + event.getCharacter()
             );
         });
+    }
+
+    // =========================================================
+    // SETTINGS BUTTON
+    // =========================================================
+
+    private void setupSettingsButton() {
+
+        view.getSettingsButton()
+                .setOnAction(event -> {
+
+                    openSettings();
+                });
+    }
+
+    private void openSettings() {
+
+        TextInputDialog dialog =
+                new TextInputDialog(
+                        view.getUserName()
+                );
+
+        dialog.setTitle("Settings");
+
+        dialog.setHeaderText("Change user name");
+
+        dialog.setContentText("User name:");
+
+        Optional<String> result =
+                dialog.showAndWait();
+
+        // Cancel was pressed
+        if (!result.isPresent()) {
+
+            return;
+        }
+
+        String newName =
+                result.get().trim();
+
+        if (newName.isEmpty()) {
+
+            showAlert(
+                    "Invalid Data",
+                    "User name cannot be empty."
+            );
+
+            return;
+        }
+
+        view.setUserName(newName);
+
+        showAlert(
+                "Success",
+                "User name changed to " + newName + "."
+        );
+    }
+
+    // =========================================================
+    // LOGOUT BUTTON
+    // =========================================================
+
+    private void setupLogoutButton() {
+
+        view.getLogoutButton()
+                .setOnAction(event -> {
+
+                    logout();
+                });
+    }
+
+    private void logout() {
+
+        Alert confirm =
+                new Alert(
+                        Alert.AlertType.CONFIRMATION
+                );
+
+        confirm.setTitle("Logout");
+
+        confirm.setHeaderText(null);
+
+        confirm.setContentText(
+                "Are you sure you want to logout?"
+        );
+
+        Optional<ButtonType> result =
+                confirm.showAndWait();
+
+        if (result.isPresent()
+                && result.get() == ButtonType.OK) {
+
+            Platform.exit();
+        }
     }
 
     // =====================================================
