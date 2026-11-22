@@ -17,9 +17,21 @@ public class RandomAccess {
             file.writeInt(85);
 
             // Go directly to the third grade
-            file.seek(8);
+             file.seek(8);
 
             file.writeInt(95);
+
+            file.seek(0);
+
+
+            int data;
+            while(file.getFilePointer()<file.length()) {
+                System.out.println(file.readInt());
+
+            }
+
+
+
 
 
 

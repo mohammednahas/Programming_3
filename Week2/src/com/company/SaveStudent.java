@@ -7,7 +7,7 @@ public class SaveStudent {
     public static void main(String[] args) {
 
         Student student =
-                new Student(1, "Ahmed", 85);
+                new Student(1, "ali", 85);
 
         try (
                 ObjectOutputStream output =

@@ -19,8 +19,8 @@ public class Student implements Serializable {
         return id + " - " + name + " - " + grade;
     }
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 //        Student s1=new Student(1,"mohammed",84);
-//        System.out.println(s1);
-    }
+//     System.out.println(s1);
+//    }
 }

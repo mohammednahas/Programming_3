@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class TextReadExample {
 
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
 
         try (BufferedReader reader =
                      new BufferedReader(new FileReader("students.txt"))) {
