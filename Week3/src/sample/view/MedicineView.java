@@ -39,6 +39,18 @@ public class MedicineView {
 
     private Button salesButton;
 
+    private Button homeButton;
+
+    private Button medicinesButton;
+
+    private Button reportsButton;
+
+    private Button settingsButton;
+
+    private Button logoutButton;
+
+    private Button searchButton;
+
 
     public MedicineView() {
 
@@ -136,16 +148,16 @@ public class MedicineView {
         Label dashboardTitle =
                 new Label("DASHBOARD");
 
-        Button homeButton =
+        homeButton =
                 createMenuButton("🏠  Home");
 
-        Button medicinesButton =
+        medicinesButton =
                 createMenuButton("💊  Medicines");
 
         salesButton =
                 createMenuButton("🛒  Sales");
 
-        Button reportsButton =
+        reportsButton =
                 createMenuButton("📊  Reports");
 
         // -------------------------
@@ -165,7 +177,7 @@ public class MedicineView {
         editButton =
                 createMenuButton("✏  Edit Medicine");
 
-        Button settingsButton =
+        settingsButton =
                 createMenuButton("⚙  Settings");
 
         // -------------------------
@@ -184,7 +196,7 @@ public class MedicineView {
         // Logout
         // -------------------------
 
-        Button logoutButton =
+        logoutButton =
                 createMenuButton("🚪  Logout");
 
         // -------------------------
@@ -341,7 +353,7 @@ public class MedicineView {
 
         searchField.setPrefHeight(45);
 
-        Button searchButton =
+        searchButton =
                 new Button("Search");
 
         searchButton.setPrefHeight(45);
@@ -633,6 +645,60 @@ public class MedicineView {
     public Button getSalesButton() {
 
         return salesButton;
+    }
+
+    // =========================================================
+    // GET HOME BUTTON
+    // =========================================================
+
+    public Button getHomeButton() {
+
+        return homeButton;
+    }
+
+    // =========================================================
+    // GET MEDICINES BUTTON
+    // =========================================================
+
+    public Button getMedicinesButton() {
+
+        return medicinesButton;
+    }
+
+    // =========================================================
+    // GET REPORTS BUTTON
+    // =========================================================
+
+    public Button getReportsButton() {
+
+        return reportsButton;
+    }
+
+    // =========================================================
+    // GET SETTINGS BUTTON
+    // =========================================================
+
+    public Button getSettingsButton() {
+
+        return settingsButton;
+    }
+
+    // =========================================================
+    // GET LOGOUT BUTTON
+    // =========================================================
+
+    public Button getLogoutButton() {
+
+        return logoutButton;
+    }
+
+    // =========================================================
+    // GET SEARCH BUTTON
+    // =========================================================
+
+    public Button getSearchButton() {
+
+        return searchButton;
     }
 }
 
