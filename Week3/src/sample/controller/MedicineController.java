@@ -2,6 +2,7 @@ package sample.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.Alert;
 import sample.controller.SalesController;
 import javafx.scene.input.KeyCode;
@@ -10,6 +11,10 @@ import sample.service.MedicineService;
 import sample.view.AddMedicineView;
 import sample.view.EditMedicineView;
 import sample.view.MedicineView;
+import javafx.application.Platform;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
+import java.util.Optional;
 
 public class MedicineController {
 
@@ -43,11 +48,25 @@ public class MedicineController {
 
         setupSearch();
 
+        setupSearchButton();
+
+        setupHomeButton();
+
+        setupStatistics();
+
         setupAddButton();
 
         setupEditButton();
 
+        setupMedicinesButton();
+
+        setupReportsButton();
+
         setupSalesButton();
+
+        setupSettingsButton();
+
+        setupLogoutButton();
     }
 
     // =========================================================
@@ -101,6 +120,116 @@ public class MedicineController {
 
         view.getMedicineTable()
                 .setItems(filtered);
+    }
+
+    // =========================================================
+    // SEARCH BUTTON
+    // =========================================================
+
+    private void setupSearchButton() {
+
+        // Click the Search button
+        view.getSearchButton()
+                .setOnAction(event -> {
+
+                    filterMedicines(
+                            view.getSearchField().getText()
+                    );
+                });
+
+        // Press Enter inside the search field
+        view.getSearchField()
+                .setOnAction(event -> {
+
+                    filterMedicines(
+                            view.getSearchField().getText()
+                    );
+                });
+    }
+
+    // =========================================================
+    // HOME BUTTON
+    // =========================================================
+
+    private void setupHomeButton() {
+
+        view.getHomeButton()
+                .setOnAction(event -> {
+
+                    goHome();
+                });
+    }
+
+    private void goHome() {
+
+        // Clear the search
+        view.getSearchField()
+                .clear();
+
+        // Show all medicines again
+        view.getMedicineTable()
+                .setItems(allMedicines);
+
+        // Remove any selected row
+        view.getMedicineTable()
+                .getSelectionModel()
+                .clearSelection();
+
+        // Go back to the top of the table
+        if (!allMedicines.isEmpty()) {
+
+            view.getMedicineTable()
+                    .scrollTo(0);
+        }
+
+        view.getMedicineTable()
+                .refresh();
+    }
+
+    // =========================================================
+    // STATISTICS CARDS
+    // =========================================================
+
+    private void setupStatistics() {
+
+        // Show the real numbers when the app starts
+        updateStatistics();
+
+        // Update the numbers automatically whenever the list
+        // changes (add, edit, sale, reload)
+        allMedicines.addListener(
+                (ListChangeListener<Medicine>) change ->
+                        updateStatistics()
+        );
+    }
+
+    private void updateStatistics() {
+
+        int total =
+                allMedicines.size();
+
+        int available = 0;
+
+        int outOfStock = 0;
+
+        for (Medicine medicine :
+                allMedicines) {
+
+            if (medicine.getQuantity() > 0) {
+
+                available++;
+
+            } else {
+
+                outOfStock++;
+            }
+        }
+
+        view.updateStatistics(
+                total,
+                available,
+                outOfStock
+        );
     }
 
     // =========================================================
@@ -427,6 +556,112 @@ public class MedicineController {
     }
 
     // =========================================================
+    // MEDICINES BUTTON
+    // =========================================================
+
+    private void setupMedicinesButton() {
+
+        view.getMedicinesButton()
+                .setOnAction(event -> {
+
+                    reloadMedicines();
+                });
+    }
+
+    private void reloadMedicines() {
+
+        // Read the medicines again from the file
+        allMedicines.setAll(
+                service.loadMedicines()
+        );
+
+        // Clear the search and show the full list
+        view.getSearchField()
+                .clear();
+
+        view.getMedicineTable()
+                .setItems(allMedicines);
+
+        view.getMedicineTable()
+                .refresh();
+    }
+
+    // =========================================================
+    // REPORTS BUTTON
+    // =========================================================
+
+    private void setupReportsButton() {
+
+        view.getReportsButton()
+                .setOnAction(event -> {
+
+                    showReport();
+                });
+    }
+
+    private void showReport() {
+
+        int totalMedicines =
+                allMedicines.size();
+
+        int totalUnits = 0;
+
+        double totalValue = 0;
+
+        StringBuilder lowStock =
+                new StringBuilder();
+
+        StringBuilder outOfStock =
+                new StringBuilder();
+
+        for (Medicine medicine :
+                allMedicines) {
+
+            int quantity =
+                    medicine.getQuantity();
+
+            totalUnits += quantity;
+
+            totalValue +=
+                    medicine.getPrice() * quantity;
+
+            if (quantity == 0) {
+
+                outOfStock.append("  • ")
+                        .append(medicine.getName())
+                        .append("\n");
+
+            } else if (quantity <= 10) {
+
+                lowStock.append("  • ")
+                        .append(medicine.getName())
+                        .append(" (")
+                        .append(quantity)
+                        .append(" left)\n");
+            }
+        }
+
+        String report =
+                "Number of medicines: " + totalMedicines
+                        + "\nTotal stock units: " + totalUnits
+                        + "\nTotal stock value: "
+                        + String.format("%.2f", totalValue)
+                        + "\n\nLow Stock (1 - 10):\n"
+                        + (lowStock.length() == 0
+                        ? "  None\n"
+                        : lowStock.toString())
+                        + "\nOut of Stock:\n"
+                        + (outOfStock.length() == 0
+                        ? "  None"
+                        : outOfStock.toString());
+
+        showAlert(
+                "Pharmacy Report",
+                report
+        );
+    }
+
+    // =========================================================
     // ALERT
     // =========================================================
 
@@ -531,6 +766,100 @@ public class MedicineController {
                     "Key Typed: " + event.getCharacter()
             );
         });
+    }
+
+    // =========================================================
+    // SETTINGS BUTTON
+    // =========================================================
+
+    private void setupSettingsButton() {
+
+        view.getSettingsButton()
+                .setOnAction(event -> {
+
+                    openSettings();
+                });
+    }
+
+    private void openSettings() {
+
+        TextInputDialog dialog =
+                new TextInputDialog(
+                        view.getUserName()
+                );
+
+        dialog.setTitle("Settings");
+
+        dialog.setHeaderText("Change user name");
+
+        dialog.setContentText("User name:");
+
+        Optional<String> result =
+                dialog.showAndWait();
+
+        // Cancel was pressed
+        if (!result.isPresent()) {
+
+            return;
+        }
+
+        String newName =
+                result.get().trim();
+
+        if (newName.isEmpty()) {
+
+            showAlert(
+                    "Invalid Data",
+                    "User name cannot be empty."
+            );
+
+            return;
+        }
+
+        view.setUserName(newName);
+
+        showAlert(
+                "Success",
+                "User name changed to " + newName + "."
+        );
+    }
+
+    // =========================================================
+    // LOGOUT BUTTON
+    // =========================================================
+
+    private void setupLogoutButton() {
+
+        view.getLogoutButton()
+                .setOnAction(event -> {
+
+                    logout();
+                });
+    }
+
+    private void logout() {
+
+        Alert confirm =
+                new Alert(
+                        Alert.AlertType.CONFIRMATION
+                );
+
+        confirm.setTitle("Logout");
+
+        confirm.setHeaderText(null);
+
+        confirm.setContentText(
+                "Are you sure you want to logout?"
+        );
+
+        Optional<ButtonType> result =
+                confirm.showAndWait();
+
+        if (result.isPresent()
+                && result.get() == ButtonType.OK) {
+
+            Platform.exit();
+        }
     }
 
     // =====================================================
