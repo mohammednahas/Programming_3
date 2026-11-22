@@ -51,6 +51,14 @@ public class MedicineView {
 
     private Button searchButton;
 
+    // Statistics card values
+
+    private Label totalValueLabel;
+
+    private Label availableValueLabel;
+
+    private Label outOfStockValueLabel;
+
 
     public MedicineView() {
 
@@ -389,22 +397,31 @@ public class MedicineView {
         HBox cards =
                 new HBox(15);
 
+        totalValueLabel =
+                new Label("0");
+
+        availableValueLabel =
+                new Label("0");
+
+        outOfStockValueLabel =
+                new Label("0");
+
         VBox totalCard =
                 createCard(
                         "Total Medicines",
-                        "120"
+                        totalValueLabel
                 );
 
         VBox availableCard =
                 createCard(
                         "Available",
-                        "108"
+                        availableValueLabel
                 );
 
         VBox outOfStockCard =
                 createCard(
                         "Out of Stock",
-                        "12"
+                        outOfStockValueLabel
                 );
 
         cards.getChildren().addAll(
@@ -425,14 +442,11 @@ public class MedicineView {
 
     private VBox createCard(
             String title,
-            String value
+            Label valueLabel
     ) {
 
         Label titleLabel =
                 new Label(title);
-
-        Label valueLabel =
-                new Label(value);
 
         VBox card =
                 new VBox(8);
@@ -451,6 +465,29 @@ public class MedicineView {
         );
 
         return card;
+    }
+
+    // =========================================================
+    // UPDATE STATISTICS CARDS
+    // =========================================================
+
+    public void updateStatistics(
+            int total,
+            int available,
+            int outOfStock
+    ) {
+
+        totalValueLabel.setText(
+                String.valueOf(total)
+        );
+
+        availableValueLabel.setText(
+                String.valueOf(available)
+        );
+
+        outOfStockValueLabel.setText(
+                String.valueOf(outOfStock)
+        );
     }
 
     // =========================================================
