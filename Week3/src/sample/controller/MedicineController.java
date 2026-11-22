@@ -47,6 +47,10 @@ public class MedicineController {
 
         setupEditButton();
 
+        setupMedicinesButton();
+
+        setupReportsButton();
+
         setupSalesButton();
     }
 
@@ -424,6 +428,112 @@ public class MedicineController {
                     "Price must be a number and quantity must be an integer."
             );
         }
+    }
+
+    // =========================================================
+    // MEDICINES BUTTON
+    // =========================================================
+
+    private void setupMedicinesButton() {
+
+        view.getMedicinesButton()
+                .setOnAction(event -> {
+
+                    reloadMedicines();
+                });
+    }
+
+    private void reloadMedicines() {
+
+        // Read the medicines again from the file
+        allMedicines.setAll(
+                service.loadMedicines()
+        );
+
+        // Clear the search and show the full list
+        view.getSearchField()
+                .clear();
+
+        view.getMedicineTable()
+                .setItems(allMedicines);
+
+        view.getMedicineTable()
+                .refresh();
+    }
+
+    // =========================================================
+    // REPORTS BUTTON
+    // =========================================================
+
+    private void setupReportsButton() {
+
+        view.getReportsButton()
+                .setOnAction(event -> {
+
+                    showReport();
+                });
+    }
+
+    private void showReport() {
+
+        int totalMedicines =
+                allMedicines.size();
+
+        int totalUnits = 0;
+
+        double totalValue = 0;
+
+        StringBuilder lowStock =
+                new StringBuilder();
+
+        StringBuilder outOfStock =
+                new StringBuilder();
+
+        for (Medicine medicine :
+                allMedicines) {
+
+            int quantity =
+                    medicine.getQuantity();
+
+            totalUnits += quantity;
+
+            totalValue +=
+                    medicine.getPrice() * quantity;
+
+            if (quantity == 0) {
+
+                outOfStock.append("  • ")
+                        .append(medicine.getName())
+                        .append("\n");
+
+            } else if (quantity <= 10) {
+
+                lowStock.append("  • ")
+                        .append(medicine.getName())
+                        .append(" (")
+                        .append(quantity)
+                        .append(" left)\n");
+            }
+        }
+
+        String report =
+                "Number of medicines: " + totalMedicines
+                        + "\nTotal stock units: " + totalUnits
+                        + "\nTotal stock value: "
+                        + String.format("%.2f", totalValue)
+                        + "\n\nLow Stock (1 - 10):\n"
+                        + (lowStock.length() == 0
+                        ? "  None\n"
+                        : lowStock.toString())
+                        + "\nOut of Stock:\n"
+                        + (outOfStock.length() == 0
+                        ? "  None"
+                        : outOfStock.toString());
+
+        showAlert(
+                "Pharmacy Report",
+                report
+        );
     }
 
     // =========================================================
