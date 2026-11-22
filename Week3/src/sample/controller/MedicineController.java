@@ -42,13 +42,16 @@ public class MedicineController {
         setupKeyboardEvents();
 
         setupSearch();
-
         setupAddButton();
-
         setupEditButton();
-
         setupSalesButton();
-    }
+        setupReportsButton();
+        setupSettingsButton(); 
+        setupLogoutButton();
+
+ }
+
+
 
     // =========================================================
     // SEARCH
@@ -537,30 +540,104 @@ public class MedicineController {
 // SALES BUTTON
 // =====================================================
 
-    private void setupSalesButton() {
+private void setupSalesButton() {
 
-        view.getSalesButton()
-                .setOnAction(event -> {
+    view.getSalesButton()
+            .setOnAction(event -> {
 
-                    String cashierName =
-                            "Cashier " + System.currentTimeMillis();
+                String cashierName =
+                        "Cashier " + System.currentTimeMillis();
 
-                    new SalesController(
-                            service,
-                            cashierName
-                    );
+                new SalesController(
+                        service,
+                        cashierName
+                );
 
-                    allMedicines.setAll(service.loadMedicines());
+                allMedicines.setAll(service.loadMedicines());
 
-                    view.getMedicineTable().refresh();
-                });
-    }
-    // =========================================================
-    // GET VIEW
-    // =========================================================
+                view.getMedicineTable().refresh();
+            });
+}
 
-    public MedicineView getView() {
+// =========================================================
+// REPORTS BUTTON
+// =========================================================
 
-        return view;
-    }
+private void setupReportsButton() {
+
+    view.getReportsButton()
+            .setOnAction(event -> {
+
+                Alert alert = new Alert(
+                        Alert.AlertType.INFORMATION
+                );
+
+                alert.setTitle("Pharmacy Reports");
+                alert.setHeaderText("Reports");
+
+                alert.setContentText(
+                        "Total Medicines: " + allMedicines.size()
+                );
+
+                alert.showAndWait();
+            });
+}
+
+
+
+private void setupSettingsButton() {
+
+    view.getSettingsButton().setOnAction(event -> {
+
+        Alert alert = new Alert(
+                Alert.AlertType.INFORMATION
+        );
+
+        alert.setTitle("Pharmacy Settings");
+        alert.setHeaderText("Settings");
+
+        alert.setContentText(
+                "Pharmacy Management System\n" +
+                "Settings panel is under development."
+        );
+
+        alert.showAndWait();
+    });
+}
+
+
+private void setupLogoutButton() {
+
+    view.getLogoutButton().setOnAction(event -> {
+
+        Alert alert = new Alert(
+                Alert.AlertType.CONFIRMATION
+        );
+
+        alert.setTitle("Logout");
+        alert.setHeaderText("Confirm Logout");
+        alert.setContentText(
+                "Are you sure you want to exit?"
+        );
+
+        alert.showAndWait().ifPresent(response -> {
+
+            if (response == javafx.scene.control.ButtonType.OK) {
+                javafx.application.Platform.exit();
+            }
+
+        });
+    });
+}
+
+
+// =========================================================
+// GET VIEW
+// =========================================================
+
+
+public MedicineView getView() {
+
+    return view;
+}
 }

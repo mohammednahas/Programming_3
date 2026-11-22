@@ -11,16 +11,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MedicineService {
 
     // Use the existing Data folder in the project
-    private final String filePath = "Data/medicines.txt";
+   private final String filePath = "Week3/Data/medicines.txt";
+    // Print the actual file location
+    public MedicineService() {
+        System.out.println(
+            "Medicine file: " +
+            new java.io.File(filePath).getAbsolutePath()
+        );
+    }
 
     // =====================================================
     // LOAD MEDICINES
     // =====================================================
 
-    public  List<Medicine> loadMedicines() {
+    public List<Medicine> loadMedicines() {
 
         List<Medicine> medicines = new ArrayList<>();
 
@@ -52,6 +60,7 @@ public class MedicineService {
 
         return medicines;
     }
+
 
     // =====================================================
     // ADD MEDICINE

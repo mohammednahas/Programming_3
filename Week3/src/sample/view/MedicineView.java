@@ -14,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import sample.controller.SalesController;
 
 import sample.model.Medicine;
 
@@ -38,6 +39,12 @@ public class MedicineView {
     private Button editButton;
 
     private Button salesButton;
+
+    private Button reportsButton;
+
+    private Button settingsButton;
+
+    private Button logoutButton;
 
 
     public MedicineView() {
@@ -138,14 +145,20 @@ public class MedicineView {
 
         Button homeButton =
                 createMenuButton("🏠  Home");
-
+        homeButton.setOnAction(event -> {
+        root.setCenter(createMainContent());
+        });
         Button medicinesButton =
                 createMenuButton("💊  Medicines");
+
+        medicinesButton.setOnAction(event -> {
+        root.setCenter(createMainContent());
+        });
 
         salesButton =
                 createMenuButton("🛒  Sales");
 
-        Button reportsButton =
+        reportsButton =
                 createMenuButton("📊  Reports");
 
         // -------------------------
@@ -165,7 +178,7 @@ public class MedicineView {
         editButton =
                 createMenuButton("✏  Edit Medicine");
 
-        Button settingsButton =
+        settingsButton =
                 createMenuButton("⚙  Settings");
 
         // -------------------------
@@ -184,7 +197,7 @@ public class MedicineView {
         // Logout
         // -------------------------
 
-        Button logoutButton =
+         logoutButton =
                 createMenuButton("🚪  Logout");
 
         // -------------------------
@@ -634,5 +647,14 @@ public class MedicineView {
 
         return salesButton;
     }
+    public Button getReportsButton() {
+    return reportsButton;
+}
+public Button getSettingsButton() {
+    return settingsButton;
+}
+public Button getLogoutButton() {
+    return logoutButton;
+}
 }
 

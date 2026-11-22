@@ -77,7 +77,11 @@ public class Main {
 
         System.out.println(account.getBalance());
 
-        account.deposit(500);
+        try {
+            account.deposit(-300);
+        } catch (InvalidAmountException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
 
         System.out.println(
                 "Balance: " + account.getBalance()
@@ -86,7 +90,7 @@ public class Main {
        try {
             account.withdraw(200);
       } catch (InsufficientBalanceException e) {
-           e.printStackTrace();
+           System.out.println("Error: " + e.getMessage());
         }
 
         System.out.println(
@@ -96,7 +100,7 @@ public class Main {
        try {
             account.withdraw(2000);
      } catch (InsufficientBalanceException e) {
-          e.printStackTrace();
+          System.out.println("Error: " + e.getMessage());
         }
 
         System.out.println(

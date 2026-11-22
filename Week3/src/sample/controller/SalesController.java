@@ -208,18 +208,36 @@ public class SalesController {
 
             if (success) {
 
-                showAlert(
-                        Alert.AlertType.INFORMATION,
-                        "Sale Completed",
-                        "Cashier: " + cashierName
-                                + "\nMedicine: " + medicineName
-                                + "\nQuantity: " + quantity
-                                + "\nTotal: " + total
-                                + "\nMode: "
-                                + (useSynchronization
+                                
+                String receipt =
+                        "FCI PHARMA CARE\n" +
+                        "============================\n" +
+                        "        SALES RECEIPT\n" +
+                        "============================\n\n" +
+                        "Cashier: " + cashierName + "\n" +
+                        "Medicine: " + medicineName + "\n" +
+                        "Quantity: " + quantity + "\n" +
+                        "Unit Price: " +
+                        String.format("%.2f EGP", selectedMedicine.getPrice()) + "\n" +
+                        "----------------------------\n" +
+                        "TOTAL: " +
+                        String.format("%.2f EGP", total) + "\n" +
+                        "----------------------------\n" +
+                        "Sale Mode: " +
+                        (useSynchronization
                                 ? "With Synchronization"
-                                : "Without Synchronization")
-                );
+                                : "Without Synchronization") + "\n\n" +
+                        "Thank you for your purchase!";
+
+                Alert receiptAlert =
+                        new Alert(Alert.AlertType.INFORMATION);
+
+                receiptAlert.setTitle("Sales Receipt");
+                receiptAlert.setHeaderText("Payment Successful");
+                receiptAlert.setContentText(receipt);
+
+                receiptAlert.showAndWait();
+
 
                 loadMedicines();
 
